@@ -1,25 +1,29 @@
 package dev.entropire.personalkeepinv;
 
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import dev.entropire.personalkeepinv.command.KeepInvCommand;
+import dev.entropire.personalkeepinv.listener.GameRuleEnforcer;
 import dev.entropire.personalkeepinv.listener.PlayerDeathListener;
 
 public final class PersonalKeepInv extends JavaPlugin implements Listener {
 
-    private final PlayerData playerData;
-
-    private PersonalKeepInv(){
-       playerData = new PlayerData(this); 
-    }
+    private PlayerData playerData;
 
     @Override
     public void onEnable() {
-        getServer().getPluginManager().registerEvents(new PlayerDeathListener(playerData), this);
+        playerData = new PlayerData(this);
+        GameRuleEnforcer enforcer = new GameRuleEnforcer(getLogger());
+        enforcer.enforceAll();
 
-        getCommand("keepinv").setExecutor(new KeepInvCommand(playerData));
-        getCommand("keepinv").setTabCompleter(new KeepInvCommand(playerData));
+        getServer().getPluginManager().registerEvents(enforcer, this);
+        getServer().getPluginManager().registerEvents(new PlayerDeathListener(playerData, enforcer), this);
+
+        KeepInvCommand keepInvCommand = new KeepInvCommand(playerData);
+        getCommand("keepinv").setExecutor(keepInvCommand);
+        getCommand("keepinv").setTabCompleter(keepInvCommand);
     }
 
     public PlayerData getPlayerData(){
