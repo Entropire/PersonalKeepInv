@@ -1,0 +1,20 @@
+name: PersonalKeepInv
+version: '${version}'
+main: dev.entropire.personalkeepinv.PersonalKeepInv
+api-version: '26.3'
+
+permissions:
+  keepinv.use:
+    description: Allows players to manage their personal KeepInv
+    default: true
+
+  keepinv.admin:
+    description: Allows changing the default keepInv gamerule
+    default: op
+
+commands:
+  keepinv:
+    description: manage KeepInv settings
+    usage: /keepinv
+    permissions: keepinv.use
+    permission-message: "&cYou don't have permission to use this command!"
