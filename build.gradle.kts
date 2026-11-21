@@ -35,6 +35,7 @@ tasks.register<Copy>("deploy") {
 }
 
 tasks.jar {
+    archiveBaseName = "PersonalKeepInv"
     from("LICENSE") {
         into("META-INF")
     }

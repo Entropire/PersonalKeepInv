@@ -1,14 +1,12 @@
 package dev.entropire.personalkeepinv;
 
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import dev.entropire.personalkeepinv.command.KeepInvCommand;
 import dev.entropire.personalkeepinv.listener.GameRuleEnforcer;
 import dev.entropire.personalkeepinv.listener.PlayerDeathListener;
 
-public final class PersonalKeepInv extends JavaPlugin implements Listener {
+public final class PersonalKeepInv extends JavaPlugin {
 
     private PlayerData playerData;
 

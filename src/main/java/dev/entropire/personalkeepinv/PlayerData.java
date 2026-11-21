@@ -24,8 +24,8 @@ public class PlayerData {
     }
 
     public synchronized void setPersonalKeepInv(Player player, boolean value) {
-    config.set("players." + player.getUniqueId(), value);
-    save();
+        config.set("players." + player.getUniqueId(), value);
+        save();
     }
 
     public synchronized boolean getPersonalKeepInv(Player player) {

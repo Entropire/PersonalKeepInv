@@ -40,7 +40,6 @@ public final class GameRuleHelper {
         GET_TYPED = typedAvailable ? getTyped : null;
         SET_TYPED = typedAvailable ? setTyped : null;
 
-        // 4. Always look up the string API too, as the fallback
         GET_STRING = method(World.class, "getGameRuleValue", String.class);
         SET_STRING = method(World.class, "setGameRuleValue", String.class, String.class);
 

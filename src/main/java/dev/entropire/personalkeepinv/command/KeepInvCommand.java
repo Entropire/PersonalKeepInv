@@ -70,7 +70,7 @@ public class KeepInvCommand implements CommandExecutor, TabCompleter {
 
         if (args.length == 1) {
             boolean defaultKeepInv = playerData.getDefaultKeepInv();
-            player.sendMessage("Default keepInv is currently set to " + (defaultKeepInv ? "§aEnabled" : "§cDisabled"));
+            player.sendMessage("Global default keepInv is currently set to " + (defaultKeepInv ? "§aEnabled" : "§cDisabled"));
             return;
         }
 
@@ -93,8 +93,8 @@ public class KeepInvCommand implements CommandExecutor, TabCompleter {
         player.sendMessage("§8§m---------§r §6KeepInv Help §8§m---------");
         player.sendMessage("§e/keepinv §7- Show KeepInv status");
         player.sendMessage("§e/keepinv on/off/global §7- Change personal KeepInv");
-        player.sendMessage("§e/keepinv default §7- Show default KeepInv");
-        player.sendMessage("§e/keepinv default on/off §7- Change default KeepInv status");
+        player.sendMessage("§e/keepinv default §7- Show global default KeepInv");
+        player.sendMessage("§e/keepinv default on/off §7- Change global default KeepInv status");
     }
 
     @Override
