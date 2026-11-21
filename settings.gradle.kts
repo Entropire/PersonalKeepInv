@@ -1,1 +1,1 @@
-rootProject.name = "personal-keep-inv"
+rootProject.name = "PersonalKeepInv"

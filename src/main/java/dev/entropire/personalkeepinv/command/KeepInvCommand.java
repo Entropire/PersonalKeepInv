@@ -1,9 +1,9 @@
 package dev.entropire.personalkeepinv.command;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-import org.bukkit.GameRules;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -22,30 +22,44 @@ public class KeepInvCommand implements CommandExecutor, TabCompleter {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!(sender instanceof Player player)) {
+        if (!(sender instanceof Player)) {
             sender.sendMessage("§cOnly players can use this command!");
+            return true;
+        }
+        Player player = (Player) sender;
+
+        if(!player.hasPermission("keepinv.use")){
+            player.sendMessage("§cYou don't have permission to use the command KeepInv!");
             return true;
         }
 
         if (args.length == 0) {
             boolean personalKeepInv = playerData.getPersonalKeepInv(player);
-            player.sendMessage("Personal keepInv is currently set to " + (personalKeepInv ? "§aEnabled" : "§cDisabled"));
+            String source = playerData.hasPersonalKeepInv(player) ? "" : " §7(global)";
+            player.sendMessage("Personal KeepInv is currently " + (personalKeepInv ? "§aEnabled" : "§cDisabled") + source);
             return true;
         }
 
         switch (args[0].toLowerCase()) {
-            case "on" -> setPersonal(player, true);
-            case "off" -> setPersonal(player, false);
-            case "default" -> handleDefault(player, args);
-            default -> sendHelp(player);
+            case "on": 
+                playerData.setPersonalKeepInv(player, true);
+                player.sendMessage("§aPersonal KeepInv has been enabled!");
+                break;
+            case "off": 
+                playerData.setPersonalKeepInv(player, false);
+                player.sendMessage("§aPersonal KeepInv has been §cdisabled§a!");
+                break;
+            case "global":
+                playerData.resetPersonalKeepInv(player);
+                player.sendMessage("§aPersonal KeepInv now follows the global default!");
+                break;
+            case "default": handleDefault(player, args);
+                break;
+            default: sendHelp(player); 
+                break;
         }
 
         return true;
-    }
-
-    private void setPersonal(Player player, boolean value) {
-        playerData.setPersonalKeepInv(player, value);
-        player.sendMessage("§aPersonal KeepInv has been " + (value ? "§aenabled" : "§cdisabled") + "§a!");
     }
 
     private void handleDefault(Player player, String[] args) {
@@ -55,40 +69,47 @@ public class KeepInvCommand implements CommandExecutor, TabCompleter {
         }
 
         if (args.length == 1) {
-            boolean defaultKeepInv = player.getWorld().getGameRuleValue(GameRules.KEEP_INVENTORY);
-            player.sendMessage("Default keepInv is currently set to " + (defaultKeepInv ? "§aEnabled" : "§cDisabled"));
+            boolean defaultKeepInv = playerData.getDefaultKeepInv();
+            player.sendMessage("Global default keepInv is currently set to " + (defaultKeepInv ? "§aEnabled" : "§cDisabled"));
             return;
         }
 
         switch (args[1].toLowerCase()) {
-            case "on" -> setDefault(player, true);
-            case "off" -> setDefault(player, false);
-            default -> sendHelp(player);
+            case "on": setDefault(player, true);
+                break;
+            case "off": setDefault(player, false);
+                break;
+            default: sendHelp(player);
+                break;
         }
     }
 
     private void setDefault(Player player, boolean value) {
-        player.getWorld().setGameRule(GameRules.KEEP_INVENTORY, value);
-        player.sendMessage("§aDefault KeepInv has been " + (value ? "§aenabled" : "§cdisabled") + "§a!");
+        playerData.setDefaultKeepInv(value);
+        player.sendMessage("§aGlobal default KeepInv has been " + (value ? "§aenabled" : "§cdisabled") + "§a!");
     }
 
     private void sendHelp(Player player) {
         player.sendMessage("§8§m---------§r §6KeepInv Help §8§m---------");
         player.sendMessage("§e/keepinv §7- Show KeepInv status");
-        player.sendMessage("§e/keepinv on/off §7- Change personal KeepInv");
-        player.sendMessage("§e/keepinv default §7- Show default KeepInv");
-        player.sendMessage("§e/keepinv default on/off §7- Change default KeepInv status");
+        player.sendMessage("§e/keepinv on/off/global §7- Change personal KeepInv");
+        player.sendMessage("§e/keepinv default §7- Show global default KeepInv");
+        player.sendMessage("§e/keepinv default on/off §7- Change global default KeepInv status");
     }
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
-        if(!(sender instanceof Player player)) return List.of();
+        if (!(sender instanceof Player)) {
+            return Collections.emptyList();
+        }
+        Player player = (Player) sender;
 
         List<String> suggestions = new ArrayList<>();
 
         if(args.length == 1){
             suggestions.add("on");
             suggestions.add("off");
+            suggestions.add("global");
             if (player.hasPermission("keepinv.admin")) suggestions.add("default");
         }
 
